@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+// const fetch = import('node-fetch');
 
 const ACCESS_TOKEN = process.env.API_ACCESS_TOKEN;
 
@@ -80,4 +80,8 @@ const getMovieDetail = async (id) => {
   return data;
 };
 
-export { getPopularMovies, getNowPlayingMovies, getMovieDetail };
+module.exports = {
+  getPopularMovies,
+  getNowPlayingMovies,
+  getMovieDetail,
+};

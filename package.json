@@ -2,17 +2,15 @@
   "name": "movieflix_api",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
-  "type": "module",
+  "main": "./dist/server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node ./src/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2",
-    "node-fetch": "^3.3.2"
+    "express": "^4.18.2"
   },
   "devDependencies": {
     "dotenv": "^16.3.1",

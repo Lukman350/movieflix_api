@@ -1,11 +1,12 @@
-import express from 'express';
-import 'dotenv/config';
+const express = require('express');
+const dotenv = require('dotenv');
+dotenv.config();
 
-import {
+const {
   getPopularMovies,
   getNowPlayingMovies,
   getMovieDetail,
-} from './data/movie.js';
+} = require('./data/movie.js');
 
 const app = express();
 
@@ -41,4 +42,4 @@ app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
 
-export default app;
+module.exports = app;
