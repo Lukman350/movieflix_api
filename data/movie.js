@@ -59,7 +59,21 @@ const getNowPlayingMovies = async () => {
     }
   );
   const data = await response.json();
-  return data.results;
+
+  const results = [];
+
+  for (const movie of data.results) {
+    const { id, title, backdrop_path, vote_average } = movie;
+
+    results.push({
+      id,
+      title,
+      backdrop_path,
+      vote_average,
+    });
+  }
+
+  return results;
 };
 
 const getMovieDetail = async (id) => {
