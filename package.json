@@ -2,9 +2,9 @@
   "name": "movieflix_api",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node ./src/server.js"
+    "start": "node ./index.js"
   },
   "keywords": [],
   "author": "",

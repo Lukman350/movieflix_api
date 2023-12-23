@@ -1,5 +1,3 @@
-// const fetch = import('node-fetch');
-
 const ACCESS_TOKEN = process.env.API_ACCESS_TOKEN;
 
 const getPopularMovies = async () => {
