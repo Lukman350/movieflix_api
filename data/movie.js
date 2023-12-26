@@ -116,10 +116,13 @@ const getMovieDetail = async (id, withCast = false) => {
     id: movie_id,
     imdb_id,
     original_language,
+    title,
     overview,
     poster_path,
+    backdrop_path,
     runtime,
     vote_average,
+    vote_count,
   } = data;
 
   const casts = [];
@@ -143,10 +146,13 @@ const getMovieDetail = async (id, withCast = false) => {
     id: movie_id,
     imdb_id,
     original_language,
+    title,
     overview,
     poster_path,
+    backdrop_path,
     runtime,
     vote_average,
+    vote_count,
   });
 
   if (withCast) results.cast = casts;
