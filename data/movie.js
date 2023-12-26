@@ -11,7 +11,13 @@ const getPopularMovies = async () => {
       },
     }
   );
+
+  if (!response.ok) throw new Error(response.statusText);
+
   const data = await response.json();
+
+  if (!data) throw new Error('No movie were found');
+
   const results = [];
 
   for (const movie of data.results) {
@@ -58,7 +64,12 @@ const getNowPlayingMovies = async () => {
       },
     }
   );
+
+  if (!response.ok) throw new Error(response.statusText);
+
   const data = await response.json();
+
+  if (!data) throw new Error('No movie were found');
 
   const results = [];
 
@@ -76,9 +87,11 @@ const getNowPlayingMovies = async () => {
   return results;
 };
 
-const getMovieDetail = async (id) => {
+const getMovieDetail = async (id, withCast = false) => {
   const response = await fetch(
-    `https://api.themoviedb.org/3/movie/${id}?language=en-US`,
+    withCast
+      ? `https://api.themoviedb.org/3/movie/${id}?language=en-US&append_to_response=credits`
+      : `https://api.themoviedb.org/3/movie/${id}?language=en-US`,
     {
       method: 'GET',
       headers: {
@@ -87,9 +100,58 @@ const getMovieDetail = async (id) => {
       },
     }
   );
+
+  if (!response.ok) throw new Error(response.statusText);
+
   const data = await response.json();
 
-  return data;
+  if (!data) throw new Error('No movie were found');
+
+  const results = {};
+
+  const {
+    adult,
+    budget,
+    genres,
+    id: movie_id,
+    imdb_id,
+    original_language,
+    overview,
+    poster_path,
+    runtime,
+    vote_average,
+  } = data;
+
+  const casts = [];
+
+  if (withCast) {
+    for (const actor of data.credits.cast) {
+      const { id, name, profile_path } = actor;
+
+      casts.push({
+        id,
+        name,
+        profile_path,
+      });
+    }
+  }
+
+  Object.assign(results, {
+    adult,
+    budget,
+    genres,
+    id: movie_id,
+    imdb_id,
+    original_language,
+    overview,
+    poster_path,
+    runtime,
+    vote_average,
+  });
+
+  if (withCast) results.cast = casts;
+
+  return results;
 };
 
 module.exports = {
