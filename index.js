@@ -67,9 +67,9 @@ app.get('/api/get_movie/:id', async (req, res) => {
   }
 });
 
-app.get('/api/search_movie/?query=:query', async (req, res) => {
+app.get('/api/search_movie', async (req, res) => {
   try {
-    const { query } = req.params;
+    const { query } = req.query;
     const movies = await searchMovies(query);
 
     console.log(`Successfully fetched movies with query: ${query}`);
