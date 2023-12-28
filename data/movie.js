@@ -90,7 +90,7 @@ const getNowPlayingMovies = async () => {
 const getMovieDetail = async (id, withCast = false) => {
   const response = await fetch(
     withCast
-      ? `https://api.themoviedb.org/3/movie/${id}?language=en-US&append_to_response=credits`
+      ? `https://api.themoviedb.org/3/movie/${id}?language=en-US&append_to_response=credits,videos`
       : `https://api.themoviedb.org/3/movie/${id}?language=en-US`,
     {
       method: 'GET',
@@ -120,12 +120,14 @@ const getMovieDetail = async (id, withCast = false) => {
     overview,
     poster_path,
     backdrop_path,
+    release_date,
     runtime,
     vote_average,
     vote_count,
   } = data;
 
   const casts = [];
+  const videos = [];
 
   if (withCast) {
     for (const actor of data.credits.cast) {
@@ -135,6 +137,17 @@ const getMovieDetail = async (id, withCast = false) => {
         id,
         name,
         profile_path,
+      });
+    }
+
+    for (const video of data.videos.results) {
+      const { key, name, site, type } = video;
+
+      videos.push({
+        key,
+        name,
+        site,
+        type,
       });
     }
   }
@@ -150,12 +163,16 @@ const getMovieDetail = async (id, withCast = false) => {
     overview,
     poster_path,
     backdrop_path,
+    release_date,
     runtime,
     vote_average,
     vote_count,
   });
 
-  if (withCast) results.cast = casts;
+  if (withCast) {
+    results.cast = casts;
+    results.videos = videos;
+  }
 
   return results;
 };
