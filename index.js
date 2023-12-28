@@ -6,6 +6,7 @@ const {
   getPopularMovies,
   getNowPlayingMovies,
   getMovieDetail,
+  searchMovies,
 } = require('./data/movie.js');
 
 const app = express();
@@ -56,6 +57,24 @@ app.get('/api/get_movie/:id', async (req, res) => {
     console.log(`Successfully fetched movie with id: ${id}`);
 
     res.status(200).json(movie);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+app.get('/api/search_movie/?query=:query', async (req, res) => {
+  try {
+    const { query } = req.params;
+    const movies = await searchMovies(query);
+
+    console.log(`Successfully fetched movies with query: ${query}`);
+
+    res.status(200).json(movies);
   } catch (error) {
     console.log(error);
 

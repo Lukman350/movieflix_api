@@ -177,8 +177,43 @@ const getMovieDetail = async (id, withCast = false) => {
   return results;
 };
 
+const searchMovies = async (query) => {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/search/movie?language=en-US&query=${query}&page=1&include_adult=false&region=id`,
+    {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+      },
+    }
+  );
+
+  if (!response.ok) throw new Error(response.statusText);
+
+  const data = await response.json();
+
+  if (!data) throw new Error('No movie were found');
+
+  const results = [];
+
+  for (const movie of data.results) {
+    const { id, title, backdrop_path, vote_average } = movie;
+
+    results.push({
+      id,
+      title,
+      backdrop_path,
+      vote_average,
+    });
+  }
+
+  return results;
+};
+
 module.exports = {
   getPopularMovies,
   getNowPlayingMovies,
   getMovieDetail,
+  searchMovies,
 };
