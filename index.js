@@ -41,7 +41,7 @@ app.get('/api/now_playing', async (req, res) => {
     if (!page) page = 1;
     if (!full) full = false;
 
-    const movies = await getNowPlayingMovies(page);
+    const movies = await getNowPlayingMovies(page, full);
 
     console.log(
       `Successfully get now playing movies list with ${movies.length} length`

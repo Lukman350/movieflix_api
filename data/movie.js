@@ -154,9 +154,17 @@ const getNowPlayingMovies = async (page = 1, full = false) => {
   const results = [];
 
   for (const movie of data.results) {
-    if (!full) {
-      const { id, title, backdrop_path, vote_average } = movie;
+    const {
+      id,
+      adult,
+      title,
+      backdrop_path,
+      vote_average,
+      vote_count,
+      genre_ids,
+    } = movie;
 
+    if (!full) {
       results.push({
         id,
         title,
@@ -164,15 +172,6 @@ const getNowPlayingMovies = async (page = 1, full = false) => {
         vote_average,
       });
     } else {
-      const {
-        id,
-        adult,
-        title,
-        backdrop_path,
-        vote_average,
-        vote_count,
-        genre_ids,
-      } = movie;
       let genres = getMovieGenres(genre_ids);
 
       if (genres.length === 0)
