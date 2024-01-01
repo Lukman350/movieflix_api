@@ -80,9 +80,9 @@ const GENRES = [
   },
 ];
 
-const getPopularMovies = async () => {
+const getPopularMovies = async (page) => {
   const response = await fetch(
-    `${API_BASE_URL}/movie/popular?language=en-US&page=1&region=id`,
+    `${API_BASE_URL}/movie/popular?language=en-US&page=${page}&region=id`,
     {
       method: 'GET',
       headers: {
@@ -133,9 +133,9 @@ const getPopularMovies = async () => {
   return results;
 };
 
-const getNowPlayingMovies = async () => {
+const getNowPlayingMovies = async (page = 1, full = false) => {
   const response = await fetch(
-    `${API_BASE_URL}/movie/now_playing?language=en-US&page=1&region=id`,
+    `${API_BASE_URL}/movie/now_playing?language=en-US&page=${page}&region=id`,
     {
       method: 'GET',
       headers: {
@@ -154,14 +154,46 @@ const getNowPlayingMovies = async () => {
   const results = [];
 
   for (const movie of data.results) {
-    const { id, title, backdrop_path, vote_average } = movie;
+    if (!full) {
+      const { id, title, backdrop_path, vote_average } = movie;
 
-    results.push({
-      id,
-      title,
-      backdrop_path,
-      vote_average,
-    });
+      results.push({
+        id,
+        title,
+        backdrop_path,
+        vote_average,
+      });
+    } else {
+      const {
+        id,
+        adult,
+        title,
+        backdrop_path,
+        vote_average,
+        vote_count,
+        genre_ids,
+      } = movie;
+      let genres = getMovieGenres(genre_ids);
+
+      if (genres.length === 0)
+        genres = [
+          {
+            id: null,
+            name: 'Unknown',
+          },
+        ];
+
+      results.push({
+        id,
+        adult,
+        title,
+        backdrop_path,
+        vote_average,
+        vote_count,
+        genres,
+        imdb_id: null, // imdb_id,
+      });
+    }
   }
 
   return results;
@@ -259,7 +291,7 @@ const getMovieDetail = async (id, withCast = false) => {
 
 const searchMovies = async (query, page) => {
   const response = await fetch(
-    `${API_BASE_URL}/search/movie?language=en-US&query=${query}&page=${page}&include_adult=true`,
+    `${API_BASE_URL}/search/movie?language=en-US&query=${query}&page=${page}&include_adult=false`,
     {
       method: 'GET',
       headers: {

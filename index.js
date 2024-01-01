@@ -11,9 +11,13 @@ const {
 
 const app = express();
 
-app.get('/api/get_popular', async (req, res) => {
+app.get('/api/popular', async (req, res) => {
   try {
-    const movies = await getPopularMovies();
+    let { page } = req.query;
+
+    if (!page) page = 1;
+
+    const movies = await getPopularMovies(page);
 
     console.log(
       `Successfully get popular movies list with ${movies.length} length`
@@ -30,9 +34,14 @@ app.get('/api/get_popular', async (req, res) => {
   }
 });
 
-app.get('/api/get_now_playing', async (req, res) => {
+app.get('/api/now_playing', async (req, res) => {
   try {
-    const movies = await getNowPlayingMovies();
+    let { page, full } = req.query;
+
+    if (!page) page = 1;
+    if (!full) full = false;
+
+    const movies = await getNowPlayingMovies(page);
 
     console.log(
       `Successfully get now playing movies list with ${movies.length} length`
@@ -49,7 +58,7 @@ app.get('/api/get_now_playing', async (req, res) => {
   }
 });
 
-app.get('/api/get_movie/:id', async (req, res) => {
+app.get('/api/movie/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const movie = await getMovieDetail(id, true);
@@ -67,7 +76,7 @@ app.get('/api/get_movie/:id', async (req, res) => {
   }
 });
 
-app.get('/api/search_movie', async (req, res) => {
+app.get('/api/search', async (req, res) => {
   try {
     const { query } = req.query;
     let { page } = req.query;
