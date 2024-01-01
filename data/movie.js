@@ -1,8 +1,88 @@
 const ACCESS_TOKEN = process.env.API_ACCESS_TOKEN;
+const API_BASE_URL = 'https://api.themoviedb.org/3';
+
+const GENRES = [
+  {
+    id: 28,
+    name: 'Action',
+  },
+  {
+    id: 12,
+    name: 'Abenteuer',
+  },
+  {
+    id: 16,
+    name: 'Animation',
+  },
+  {
+    id: 35,
+    name: 'Komödie',
+  },
+  {
+    id: 80,
+    name: 'Krimi',
+  },
+  {
+    id: 99,
+    name: 'Dokumentarfilm',
+  },
+  {
+    id: 18,
+    name: 'Drama',
+  },
+  {
+    id: 10751,
+    name: 'Familie',
+  },
+  {
+    id: 14,
+    name: 'Fantasy',
+  },
+  {
+    id: 36,
+    name: 'Historie',
+  },
+  {
+    id: 27,
+    name: 'Horror',
+  },
+  {
+    id: 10402,
+    name: 'Musik',
+  },
+  {
+    id: 9648,
+    name: 'Mystery',
+  },
+  {
+    id: 10749,
+    name: 'Liebesfilm',
+  },
+  {
+    id: 878,
+    name: 'Science Fiction',
+  },
+  {
+    id: 10770,
+    name: 'TV-Film',
+  },
+  {
+    id: 53,
+    name: 'Thriller',
+  },
+  {
+    id: 10752,
+    name: 'Kriegsfilm',
+  },
+  {
+    id: 37,
+    name: 'Western',
+  },
+];
 
 const getPopularMovies = async () => {
   const response = await fetch(
-    `https://api.themoviedb.org/3/movie/popular?language=en-US&page=1&region=id`,
+    `${API_BASE_URL}/movie/popular?language=en-US&page=1&region=id`,
     {
       method: 'GET',
       headers: {
@@ -55,7 +135,7 @@ const getPopularMovies = async () => {
 
 const getNowPlayingMovies = async () => {
   const response = await fetch(
-    `https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1&region=id`,
+    `${API_BASE_URL}/movie/now_playing?language=en-US&page=1&region=id`,
     {
       method: 'GET',
       headers: {
@@ -90,8 +170,8 @@ const getNowPlayingMovies = async () => {
 const getMovieDetail = async (id, withCast = false) => {
   const response = await fetch(
     withCast
-      ? `https://api.themoviedb.org/3/movie/${id}?language=en-US&append_to_response=credits,videos`
-      : `https://api.themoviedb.org/3/movie/${id}?language=en-US`,
+      ? `${API_BASE_URL}/movie/${id}?language=en-US&append_to_response=credits,videos`
+      : `${API_BASE_URL}/movie/${id}?language=en-US`,
     {
       method: 'GET',
       headers: {
@@ -177,9 +257,9 @@ const getMovieDetail = async (id, withCast = false) => {
   return results;
 };
 
-const searchMovies = async (query) => {
+const searchMovies = async (query, page) => {
   const response = await fetch(
-    `https://api.themoviedb.org/3/search/movie?language=en-US&query=${query}&page=1&include_adult=false&region=id`,
+    `${API_BASE_URL}/search/movie?language=en-US&query=${query}&page=${page}&include_adult=true`,
     {
       method: 'GET',
       headers: {
@@ -188,6 +268,8 @@ const searchMovies = async (query) => {
       },
     }
   );
+
+  console.log(query, page);
 
   if (!response.ok) throw new Error(response.statusText);
 
@@ -198,17 +280,52 @@ const searchMovies = async (query) => {
   const results = [];
 
   for (const movie of data.results) {
-    const { id, title, backdrop_path, vote_average } = movie;
-
-    results.push({
+    const {
       id,
+      adult,
       title,
       backdrop_path,
       vote_average,
+      vote_count,
+      genre_ids,
+    } = movie;
+    let genres = getMovieGenres(genre_ids);
+
+    if (genres.length === 0)
+      genres = [
+        {
+          id: null,
+          name: 'Unknown',
+        },
+      ];
+
+    results.push({
+      id,
+      adult,
+      title,
+      backdrop_path,
+      vote_average,
+      vote_count,
+      genres,
+      imdb_id: null, // imdb_id,
     });
   }
 
   return results;
+};
+
+const getMovieGenres = (genreIds) => {
+  const genres = [];
+
+  for (const genreId of genreIds) {
+    const genre = GENRES.find((genre) => genre.id === genreId);
+
+    if (genre) {
+      genres.push(genre);
+    }
+  }
+
+  return genres;
 };
 
 module.exports = {
