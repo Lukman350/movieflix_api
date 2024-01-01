@@ -70,7 +70,15 @@ app.get('/api/get_movie/:id', async (req, res) => {
 app.get('/api/search_movie', async (req, res) => {
   try {
     const { query } = req.query;
-    const movies = await searchMovies(query);
+    let { page } = req.query;
+
+    if (!query) {
+      throw new Error('Missing query parameter');
+    }
+
+    if (!page) page = 1;
+
+    const movies = await searchMovies(query, page);
 
     console.log(`Successfully fetched movies with query: ${query}`);
 
