@@ -174,13 +174,7 @@ const getNowPlayingMovies = async (page = 1, full = false) => {
     } else {
       let genres = getMovieGenres(genre_ids);
 
-      if (genres.length === 0)
-        genres = [
-          {
-            id: null,
-            name: 'Unknown',
-          },
-        ];
+      if (genres.length === 0) genres = [];
 
       results.push({
         id,
